@@ -1,10 +1,13 @@
 <template>
   <h1>{{ title }}</h1>
-  <character />
+  <Character />
+  <!-- <Dialog /> -->
+  
   </template>
   
   <script>
   import Character from './components/Character.vue';
+  // import Dialog from './components/Dialog.vue';
   
   export default {
     name: 'App',
