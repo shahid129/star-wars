@@ -1,8 +1,10 @@
 <template>
-  <div class="contaner-fluid">
+  <div class="container-fluid">
     <div class="row justify-content-center">
+        <!-- search bar -->
+        <input class="my-4 px-5 col-10" type="text" v-model="search" placeholder="Search Heroes">
       <div
-        v-for="char in character.results"
+        v-for="char in filterdCharacter"
         :key="char.id"
         class="char col-sm-6 col-md-4 col-lg-3">
         <!-- <router-link :to="{name: 'name', params: {id: char.id}}"> -->
@@ -24,7 +26,7 @@
     </div>
   </div>
   <!-- Dialog start-->
-  <button @click="toggleModal">Open Modal</button>
+  <!-- <button @click="toggleModal">Open Modal</button> -->
   <div v-if="showModal">
     <div class="backdrop" @click.self="closeModal">
       <div class="dialog">
@@ -53,6 +55,7 @@ export default {
   data() {
     return {
       character: [],
+      search: '', // search bar
       title: "lets play the game",
       header: "Time to get a job",
       text: "Lets do it",
@@ -64,7 +67,7 @@ export default {
   mounted() {
     fetch("https://swapi.dev/api/people/")
       .then((response) => response.json())
-      .then((data) => (this.character = data))
+      .then((data) => (this.character = data.results))
       .catch((err) => console.log(err.message));
   },
 
@@ -80,6 +83,15 @@ export default {
       this.showModal = !this.showModal;
     },
   },
+
+//   Search bar
+  computed: {
+    filterdCharacter: function() {
+        return this.character.filter((blog) => {
+            return blog.name.toLowerCase().match(this.search.toLowerCase())
+        })
+    }
+  }
 };
 </script>
 
@@ -106,6 +118,15 @@ img {
   background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
+}
+
+input {
+  text-align: center
+}
+
+/* Put plcaeholder in the center */
+::placeholder {
+   text-align: center; 
 }
 
 /* Media Query */
