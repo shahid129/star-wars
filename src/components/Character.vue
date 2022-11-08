@@ -1,38 +1,54 @@
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center">
-        <!-- search bar -->
-        <input class="my-4 px-5 col-10" type="text" v-model="search" placeholder="Search Heroes">
+      <!-- search bar -->
+      <input
+        class="my-4 px-5 col-10"
+        type="text"
+        v-model="search"
+        placeholder="Search Heroes"
+      />
+      <!-- Add Pagination -->
       <div
-        v-for="char in filterdCharacter"
+        v-for="char in currentPagePosts"
         :key="char.id"
-        class="char col-sm-6 col-md-4 col-lg-3">
+        class="char col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center"
+      >
         <!-- <router-link :to="{name: 'name', params: {id: char.id}}"> -->
         <div class="card m-1 mb-3" style="width: 14rem">
           <img
             class="img-responsive card-img-top"
             src="https://images.unsplash.com/photo-1483134529005-4c93495107d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
-            alt="Image of"/>
+            alt="Image of"
+          />
           <div class="card-body">
             <h5 class="card-title">{{ char.name }}</h5>
             <p class="card-text">W: {{ char.mass }}</p>
             <p class="card-text">H: {{ char.height }}</p>
             <a @click="toggleModal" href="#" class="btn btn-primary"
-              >Home World</a>
+              >Home World</a
+            >
           </div>
         </div>
         <!-- </router-link> -->
       </div>
     </div>
   </div>
+  <!-- <div v-for="x in formatcharacter">
+    <p>{{x}}</p>
+
+  </div> -->
   <!-- Dialog start-->
   <!-- <button @click="toggleModal">Open Modal</button> -->
   <div v-if="showModal">
     <div class="backdrop" @click.self="closeModal">
       <div class="dialog">
         <!-- <h1>{{ title }}</h1> -->
-        <p>{{ text }}</p>
-        <p>{{ header }}</p>
+        <div v-for="x in formatcharacter" :key="x.id">
+          <p>{{ x }}</p>
+        </div>
+        <!-- <p>{{ text }}</p>
+        <p>{{ header }}</p> -->
         <button @click="toggleModal" type="button" class="btn btn-primary">
           Close
         </button>
@@ -41,21 +57,26 @@
   </div>
 
   <!-- End Dialog -->
+
+  <!-- button for pervious and nex page -->
+  <div>
+      <button class="btn btn-primary m-3" @click="setCurrentPage(-1)">PREV</button>
+      <button class="btn btn-primary m-3" @click="setCurrentPage(1)">NEXT</button>
+      <p>Page: {{ currentPage }} / {{ Math.ceil(character.length / postsPerPage) }}</p>
+  </div>
 </template>
-<!-- <div v-for="char in character.results" :key="char.id" class="char col-sm-3">
-    <router-link :to="{name: 'name', params: {id: char.id}}">
-        <h2>{{char.name}}</h2>
-        <p>{{ char.mass}}</p>
-        <button v-on:click="homeWorld" class="btn btn-primary">Home World</button>
-    </router-link>
-</div> -->
 
 <script>
 export default {
   data() {
     return {
+      currentPage: 1,
+      postsPerPage: 10, // Number of post per page
       character: [],
-      search: '', // search bar
+      id: {
+        id: ''
+      },
+      search: "", // search bar
       title: "lets play the game",
       header: "Time to get a job",
       text: "Lets do it",
@@ -63,35 +84,76 @@ export default {
     };
   },
 
-//   Get info from the API
+  //   Get info from the API
   mounted() {
-    fetch("https://swapi.dev/api/people/")
-      .then((response) => response.json())
-      .then((data) => (this.character = data.results))
-      .catch((err) => console.log(err.message));
+
+    const getPeople = async () => {
+      let nextPage = "https://swapi.dev/api/people/";
+
+      let people = [];
+
+      while (nextPage) {
+        const res = await fetch(nextPage);
+        const { next, results } = await res.json();
+        nextPage = next;
+        people = [...people, ...results];
+
+        this.character = people;
+      }
+
+      console.log(people.length);
+      console.log(people);
+    }; getPeople();
   },
 
   //   Dialog
   methods: {
     closeModal() {
       this.$emit("close");
-    }
+    },
   },
 
   methods: {
     toggleModal() {
       this.showModal = !this.showModal;
     },
+    setCurrentPage(page) {
+      if (page === -1 && this.currentPage > 1) {
+        this.currentPage -= 1
+      } else if (page === 1 && this.currentPage < this.character.length / this.postsPerPage) {
+        this.currentPage += 1
+      }
+    }
   },
 
-//   Search bar
+  //   Search bar
   computed: {
-    filterdCharacter: function() {
-        return this.character.filter((blog) => {
-            return blog.name.toLowerCase().match(this.search.toLowerCase())
-        })
-    }
-  }
+    filterdCharacter: function () {
+      return this.character.filter((blog) => {
+        return blog.name.toLowerCase().match(this.search.toLowerCase());
+      })
+    },
+
+    currentPagePosts() {
+      return this.character.slice((this.currentPage - 1) * this.postsPerPage, this.currentPage * this.postsPerPage)
+      }
+      
+    },
+    formatcharacter() {
+      return this.character.map((person) => {
+        let homeworld = person.homeworld;
+        console.log(homeworld);
+
+        // fetch("homeworld")
+        //     .then((response) => response.json())
+        //     // .then((data) => (this.character = data.results))
+        //     .then((data) => console.log(data))
+        return homeworld;
+
+        // return `${person.name} is ${person.eye_color}`
+      });
+    },
+  
 };
 </script>
 
@@ -121,12 +183,12 @@ img {
 }
 
 input {
-  text-align: center
+  text-align: center;
 }
 
 /* Put plcaeholder in the center */
 ::placeholder {
-   text-align: center; 
+  text-align: center;
 }
 
 /* Media Query */
