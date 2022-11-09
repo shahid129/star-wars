@@ -7,6 +7,7 @@
         type="text"
         v-model="search"
         placeholder="Search Heroes"
+        @change="filterdCharacter"
       />
       <!-- Add Pagination -->
       <div
@@ -44,9 +45,9 @@
     <div class="backdrop" @click.self="closeModal">
       <div class="dialog">
         <!-- <h1>{{ title }}</h1> -->
-        <div v-for="x in formatcharacter" :key="x.id">
-          <p>{{ x }}</p>
-        </div>
+        <!-- <div v-for="x in formatcharacter" :key="x.id">
+          <p>{{ x.name }}</p>
+        </div> -->
         <!-- <p>{{ text }}</p>
         <p>{{ header }}</p> -->
         <button @click="toggleModal" type="button" class="btn btn-primary">
@@ -60,9 +61,13 @@
 
   <!-- button for pervious and nex page -->
   <div>
-      <button class="btn btn-primary m-3" @click="setCurrentPage(-1)">PREV</button>
-      <button class="btn btn-primary m-3" @click="setCurrentPage(1)">NEXT</button>
-      <p>Page: {{ currentPage }} / {{ Math.ceil(character.length / postsPerPage) }}</p>
+    <button class="btn btn-primary m-3" @click="setCurrentPage(-1)">
+      PREV
+    </button>
+    <button class="btn btn-primary m-3" @click="setCurrentPage(1)">NEXT</button>
+    <p>
+      Page: {{ currentPage }} / {{ Math.ceil(character.length / postsPerPage) }}
+    </p>
   </div>
 </template>
 
@@ -74,7 +79,7 @@ export default {
       postsPerPage: 10, // Number of post per page
       character: [],
       id: {
-        id: ''
+        id: "",
       },
       search: "", // search bar
       title: "lets play the game",
@@ -86,7 +91,6 @@ export default {
 
   //   Get info from the API
   mounted() {
-
     const getPeople = async () => {
       let nextPage = "https://swapi.dev/api/people/";
 
@@ -103,7 +107,8 @@ export default {
 
       console.log(people.length);
       console.log(people);
-    }; getPeople();
+    };
+    getPeople();
   },
 
   //   Dialog
@@ -117,43 +122,65 @@ export default {
     toggleModal() {
       this.showModal = !this.showModal;
     },
-    setCurrentPage(page) {
-      if (page === -1 && this.currentPage > 1) {
-        this.currentPage -= 1
-      } else if (page === 1 && this.currentPage < this.character.length / this.postsPerPage) {
-        this.currentPage += 1
+    setCurrentPage(direction) {
+      if (direction === -1 && this.currentPage > 1) {
+        this.currentPage -= 1;
+      } else if (
+        direction === 1 &&
+        this.currentPage < this.character.length / this.postsPerPage
+      ) {
+        this.currentPage += 1;
       }
-    }
+    },
   },
 
   //   Search bar
   computed: {
-    filterdCharacter: function () {
-      return this.character.filter((blog) => {
-        return blog.name.toLowerCase().match(this.search.toLowerCase());
-      })
-    },
+    // filterdCharacter() {
+    //   return this.character.filter((blog) => {
+    //     return blog.name.toLowerCase().includes(this.search.toLowerCase());
+    //   })
+    // },
 
     currentPagePosts() {
-      return this.character.slice((this.currentPage - 1) * this.postsPerPage, this.currentPage * this.postsPerPage)
-      }
+      // add a variable to query search character
+      let searchChar = this.character.filter((blog) => {
+        return blog.name.toLowerCase().includes(this.search.toLowerCase());
+      })
+
+      // add a variable to query pagination
+      let paginate = this.character.slice(
+        (this.currentPage - 1) * this.postsPerPage,
+        this.currentPage * this.postsPerPage)
+        // console.log(y, x)
+
+        let search = this.search
+        if (search) {
+          return searchChar
+        } else {
+          return paginate
+        } 
+    },
+
+    formatcharacter() {
+      // return this.character.map((person) => {
+      //   let homeworld = person.homeworld;
+      //   console.log(homeworld);
+
+      //   planets = []
+
+      //   fetch("homeworld")
+      //       .then((response) => response.json())
+      //       .then((data) => (this.planets = data.results))
+      //       console.log(planets)
+      //   //     .then((data) => console.log(data))
+      //   // return homeworld;
+
+      //   // return `${person.name} is ${person.eye_color}`
+      // });
       
     },
-    formatcharacter() {
-      return this.character.map((person) => {
-        let homeworld = person.homeworld;
-        console.log(homeworld);
-
-        // fetch("homeworld")
-        //     .then((response) => response.json())
-        //     // .then((data) => (this.character = data.results))
-        //     .then((data) => console.log(data))
-        return homeworld;
-
-        // return `${person.name} is ${person.eye_color}`
-      });
-    },
-  
+  },
 };
 </script>
 
