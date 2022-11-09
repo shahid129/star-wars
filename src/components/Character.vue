@@ -11,11 +11,10 @@
       />
       <!-- Add Pagination -->
       <div
-        v-for="char in currentPagePosts"
+        v-for="(char, index) in currentPagePosts"
         :key="char.id"
         class="char col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center"
       >
-        <!-- <router-link :to="{name: 'name', params: {id: char.id}}"> -->
         <div class="card m-1 mb-3" style="width: 14rem">
           <img
             class="img-responsive card-img-top"
@@ -26,37 +25,31 @@
             <h5 class="card-title">{{ char.name }}</h5>
             <p class="card-text">W: {{ char.mass }}</p>
             <p class="card-text">H: {{ char.height }}</p>
-            <a @click="toggleModal" href="#" class="btn btn-primary"
+            <p class="card-text">id: {{ index }}</p>
+            <a @click="toggleModal(index)" href="#" class="btn btn-primary"
               >Home World</a
             >
           </div>
         </div>
-        <!-- </router-link> -->
       </div>
     </div>
   </div>
-  <!-- <div v-for="x in formatcharacter">
-    <p>{{x}}</p>
 
-  </div> -->
   <!-- Dialog start-->
-  <!-- <button @click="toggleModal">Open Modal</button> -->
   <div v-if="showModal">
     <div class="backdrop" @click.self="closeModal">
       <div class="dialog">
-        <!-- <h1>{{ title }}</h1> -->
-        <!-- <div v-for="x in formatcharacter" :key="x.id">
-          <p>{{ x.name }}</p>
-        </div> -->
-        <!-- <p>{{ text }}</p>
-        <p>{{ header }}</p> -->
+        <div v-for="(x, index) in formatcharacter" :key="index">
+          <p>{{ x }}</p>
+          <p>{{ index}}</p>
+        </div>
+
         <button @click="toggleModal" type="button" class="btn btn-primary">
           Close
         </button>
       </div>
     </div>
   </div>
-
   <!-- End Dialog -->
 
   <!-- button for pervious and nex page -->
@@ -113,12 +106,6 @@ export default {
 
   //   Dialog
   methods: {
-    closeModal() {
-      this.$emit("close");
-    },
-  },
-
-  methods: {
     toggleModal() {
       this.showModal = !this.showModal;
     },
@@ -136,12 +123,6 @@ export default {
 
   //   Search bar
   computed: {
-    // filterdCharacter() {
-    //   return this.character.filter((blog) => {
-    //     return blog.name.toLowerCase().includes(this.search.toLowerCase());
-    //   })
-    // },
-
     currentPagePosts() {
       // add a variable to query search character
       let searchChar = this.character.filter((blog) => {
@@ -152,7 +133,6 @@ export default {
       let paginate = this.character.slice(
         (this.currentPage - 1) * this.postsPerPage,
         this.currentPage * this.postsPerPage)
-        // console.log(y, x)
 
         let search = this.search
         if (search) {
@@ -162,22 +142,26 @@ export default {
         } 
     },
 
-    formatcharacter() {
-      // return this.character.map((person) => {
-      //   let homeworld = person.homeworld;
-      //   console.log(homeworld);
+    formatcharacter(index) {
+      return this.character.map((person) => {
+        let homeworld = person.homeworld;
+        // console.log(homeworld);
 
-      //   planets = []
+        // let planets = []
 
-      //   fetch("homeworld")
-      //       .then((response) => response.json())
-      //       .then((data) => (this.planets = data.results))
-      //       console.log(planets)
-      //   //     .then((data) => console.log(data))
-      //   // return homeworld;
+        // fetch(homeworld)
+        //     .then((response) => response.json())
+        //     .then(data => { planets = data })
+        //     .then(() => {
+        //       // console.log(planets.name)
+        //     })
+            // .then((data) => (this.planets = data.results))
+            // console.log(planets)
+        //     .then((data) => console.log(data))
+        return homeworld;
 
-      //   // return `${person.name} is ${person.eye_color}`
-      // });
+        // return `${person.name} is ${person.eye_color}`
+      });
       
     },
   },
@@ -191,7 +175,7 @@ img {
   margin: auto;
 }
 
-/* Dialog */
+/* Dialog or Modal */
 .dialog {
   position: relative;
   width: 40%;
