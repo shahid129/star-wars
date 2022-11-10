@@ -18,14 +18,13 @@
         <div class="card m-1 mb-3" style="width: 14rem">
           <img
             class="img-responsive card-img-top"
-            src="https://images.unsplash.com/photo-1483134529005-4c93495107d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
+            src="https://images.unsplash.com/photo-1599719500956-d158a26ab3ee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
             alt="Image of"
           />
           <div class="card-body">
-            <h5 class="card-title">{{ char.name }}</h5>
+            <h4 class="card-title">{{ char.name }}</h4>
             <p class="card-text">W: {{ char.mass }}</p>
             <p class="card-text">H: {{ char.height }}</p>
-            <p class="card-text">id: {{ index }}</p>
             <a @click="toggleModal(index)" href="#" class="btn btn-primary"
               >Home World</a
             >
@@ -95,12 +94,12 @@
 
   <!-- button for pervious and nex page -->
   <div>
-    <button class="btn btn-primary m-3" @click="setCurrentPage(-1)">
+    <button class="btn btn-primary btn-pagination m-3" @click="setCurrentPage(-1)">
       PREV
     </button>
-    <button class="btn btn-primary m-3" @click="setCurrentPage(1)">NEXT</button>
-    <p>
-      Page: {{ currentPage }} / {{ Math.ceil(character.length / postsPerPage) }}
+    <button class="btn btn-primary btn-pagination  m-3" @click="setCurrentPage(1)">NEXT</button>
+    <p class="mb-5">
+      Page: {{ currentPage }} of {{ Math.ceil(character.length / postsPerPage) }}
     </p>
   </div>
 </template>
@@ -134,9 +133,6 @@ export default {
 
         this.character = people;
       }
-
-      console.log(people.length);
-      console.log(people);
     };
     getPeople();
   },
@@ -210,6 +206,8 @@ img {
   margin: 100px auto;
   background: white;
   border-radius: 10px;
+  border-bottom: 6px solid #EE7007;
+
 }
 
 .backdrop {
@@ -219,10 +217,42 @@ img {
   width: 100%;
   height: 100%;
 }
+.card {
+  border-bottom: 6px solid #EE7007;
+}
 
+/* Input field */
 input {
   text-align: center;
+  border: .5px solid #EE7007;
+  border-radius: 5px;
+  height: 2.5em;
 }
+
+input:hover {
+  border: 1px solid #c95806;
+}
+
+/* Button */
+.btn {
+  background-color: #EE7007;
+  border: none;
+  font-weight: 900;
+}
+
+.btn:hover {
+  background-color: #c95806;
+}
+
+/* Pagination button */
+.btn-pagination {
+  background-color: #818a91;
+}
+
+.btn-pagination:hover {
+  background-color: #55595d;
+}
+
 
 /* Put plcaeholder in the center */
 ::placeholder {
