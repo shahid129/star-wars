@@ -37,14 +37,55 @@
 
   <!-- Dialog start-->
   <div v-if="showModal">
-    <div class="backdrop" @click.self="closeModal">
-      <div class="dialog">
-        <div v-for="(x, index) in formatcharacter" :key="index">
-          <p>{{ x }}</p>
-          <p>{{ index}}</p>
-        </div>
+    <div class="backdrop overflow-auto" @click.self="closeModal">
+      <div class="dialog container-fluid">
+        <div v-if="home">
+          <!-- modal Image -->
+          <img class="card-img-top home-image" src="https://images.unsplash.com/photo-1487715433499-93acdc0bd7c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1844&q=80" alt="Card image cap">
 
-        <button @click="toggleModal" type="button" class="btn btn-primary">
+          <div class="d-flex mx-auto w-auto" style="width: 18rem">
+            <div class="card-body container-fluid">
+              <h2 class="card-title text-white home-name">{{ home.name }}</h2>
+              <div class="row container overflow-auto">
+                
+                <div class="col-md-6 col-sm-12">
+                  <!-- Nested rows and cols. switch to row as screen gets smaller -->
+                  <div class="row">
+                    <div class="col-md-12 col-sm-6">
+                      <p class="fw-bold">Climate</p>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                      <p>{{ home.climate }}</p>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                      <p class="fw-bold">Population</p>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                      <p>{{ home.population }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-6">
+                      <p class="fw-bold">Terrain</p>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                      <p>{{ home.terrain }}</p>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                      <p class="fw-bold">Gravity</p>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                      <p>{{ home.gravity }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button @click="closeModal" type="button" class="btn btn-primary">
           Close
         </button>
       </div>
@@ -71,14 +112,10 @@ export default {
       currentPage: 1,
       postsPerPage: 10, // Number of post per page
       character: [],
-      id: {
-        id: "",
-      },
       search: "", // search bar
-      title: "lets play the game",
-      header: "Time to get a job",
-      text: "Lets do it",
       showModal: false,
+      index: "",
+      home: null, // info after fetching homeworld of a character
     };
   },
 
@@ -106,8 +143,20 @@ export default {
 
   //   Dialog
   methods: {
-    toggleModal() {
+    closeModal() {
+      this.showModal = false;
+    },
+
+    toggleModal(index) {
+      // Fetch info from Homeworld
       this.showModal = !this.showModal;
+      let clickedCharacter = this.character[index]; // Info about the clicked post/ homeworld
+      let fetchHomeworld = clickedCharacter.homeworld; // Querset to fetch homeworld of clicked character
+      fetch(fetchHomeworld)
+        .then((response) => response.json())
+        .then((data) => {
+          this.home = data; 
+        });
     },
     setCurrentPage(direction) {
       if (direction === -1 && this.currentPage > 1) {
@@ -127,42 +176,20 @@ export default {
       // add a variable to query search character
       let searchChar = this.character.filter((blog) => {
         return blog.name.toLowerCase().includes(this.search.toLowerCase());
-      })
+      });
 
       // add a variable to query pagination
       let paginate = this.character.slice(
         (this.currentPage - 1) * this.postsPerPage,
-        this.currentPage * this.postsPerPage)
+        this.currentPage * this.postsPerPage
+      );
 
-        let search = this.search
-        if (search) {
-          return searchChar
-        } else {
-          return paginate
-        } 
-    },
-
-    formatcharacter(index) {
-      return this.character.map((person) => {
-        let homeworld = person.homeworld;
-        // console.log(homeworld);
-
-        // let planets = []
-
-        // fetch(homeworld)
-        //     .then((response) => response.json())
-        //     .then(data => { planets = data })
-        //     .then(() => {
-        //       // console.log(planets.name)
-        //     })
-            // .then((data) => (this.planets = data.results))
-            // console.log(planets)
-        //     .then((data) => console.log(data))
-        return homeworld;
-
-        // return `${person.name} is ${person.eye_color}`
-      });
-      
+      let search = this.search;
+      if (search) {
+        return searchChar;
+      } else {
+        return paginate;
+      }
     },
   },
 };
@@ -178,7 +205,7 @@ img {
 /* Dialog or Modal */
 .dialog {
   position: relative;
-  width: 40%;
+  width: 60%;
   padding: 20px;
   margin: 100px auto;
   background: white;
@@ -202,6 +229,20 @@ input {
   text-align: center;
 }
 
+/* Modal Image */
+.home-image {
+    border-radius: 5px;
+    width: 100%;
+    height: 130px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.home-name {
+  position: relative;
+  margin-bottom: 40px;
+}
+
 /* Media Query */
 @media only screen and (max-width: 792px) {
   .dialog {
@@ -211,7 +252,7 @@ input {
 
 @media only screen and (max-width: 600px) {
   .dialog {
-    width: 90%;
+    width: 70%;
   }
 }
 </style>
