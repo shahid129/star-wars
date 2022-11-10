@@ -19,7 +19,7 @@
           <img
             class="img-responsive card-img-top"
             src="https://images.unsplash.com/photo-1599719500956-d158a26ab3ee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
-            alt="Image of"
+            v-bind:alt="`Image of ${char.name}`"
           />
           <div class="card-body">
             <h4 class="card-title">{{ char.name }}</h4>
@@ -40,7 +40,7 @@
       <div class="dialog container-fluid">
         <div v-if="home">
           <!-- modal Image -->
-          <img class="card-img-top home-image" src="https://images.unsplash.com/photo-1487715433499-93acdc0bd7c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1844&q=80" alt="Card image cap">
+          <img class="card-img-top home-image" src="https://images.unsplash.com/photo-1487715433499-93acdc0bd7c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1844&q=80" v-bind:alt="`Image of planet ${home.name}`">
 
           <div class="d-flex mx-auto w-auto" style="width: 18rem">
             <div class="card-body container-fluid">
