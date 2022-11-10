@@ -40,13 +40,16 @@
       <div class="dialog container-fluid">
         <div v-if="home">
           <!-- modal Image -->
-          <img class="card-img-top home-image" src="https://images.unsplash.com/photo-1487715433499-93acdc0bd7c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1844&q=80" v-bind:alt="`Image of planet ${home.name}`">
+          <img
+            class="card-img-top home-image"
+            src="https://images.unsplash.com/photo-1487715433499-93acdc0bd7c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1844&q=80"
+            v-bind:alt="`Image of planet ${ home.name }`"
+          />
 
           <div class="d-flex mx-auto w-auto" style="width: 18rem">
             <div class="card-body container-fluid">
               <h2 class="card-title text-white home-name">{{ home.name }}</h2>
               <div class="row container overflow-auto">
-                
                 <div class="col-md-6 col-sm-12">
                   <!-- Nested rows and cols. switch to row as screen gets smaller -->
                   <div class="row">
@@ -94,12 +97,21 @@
 
   <!-- button for pervious and nex page -->
   <div>
-    <button class="btn btn-primary btn-pagination m-3" @click="setCurrentPage(-1)">
+    <button
+      class="btn btn-primary btn-pagination m-3"
+      @click="setCurrentPage(-1)"
+    >
       PREV
     </button>
-    <button class="btn btn-primary btn-pagination  m-3" @click="setCurrentPage(1)">NEXT</button>
+    <button
+      class="btn btn-primary btn-pagination m-3"
+      @click="setCurrentPage(1)"
+    >
+      NEXT
+    </button>
     <p class="mb-5">
-      Page: {{ currentPage }} of {{ Math.ceil(character.length / postsPerPage) }}
+      Page: {{ currentPage }} of
+      {{ Math.ceil(character.length / postsPerPage) }}
     </p>
   </div>
 </template>
@@ -151,7 +163,7 @@ export default {
       fetch(fetchHomeworld)
         .then((response) => response.json())
         .then((data) => {
-          this.home = data; 
+          this.home = data;
         });
     },
     setCurrentPage(direction) {
@@ -206,8 +218,7 @@ img {
   margin: 100px auto;
   background: white;
   border-radius: 10px;
-  border-bottom: 6px solid #EE7007;
-
+  border-bottom: 6px solid #ee7007;
 }
 
 .backdrop {
@@ -218,13 +229,13 @@ img {
   height: 100%;
 }
 .card {
-  border-bottom: 6px solid #EE7007;
+  border-bottom: 6px solid #ee7007;
 }
 
 /* Input field */
 input {
   text-align: center;
-  border: .5px solid #EE7007;
+  border: 0.5px solid #ee7007;
   border-radius: 5px;
   height: 2.5em;
 }
@@ -235,7 +246,7 @@ input:hover {
 
 /* Button */
 .btn {
-  background-color: #EE7007;
+  background-color: #ee7007;
   border: none;
   font-weight: 900;
 }
@@ -253,7 +264,6 @@ input:hover {
   background-color: #55595d;
 }
 
-
 /* Put plcaeholder in the center */
 ::placeholder {
   text-align: center;
@@ -261,11 +271,11 @@ input:hover {
 
 /* Modal Image */
 .home-image {
-    border-radius: 5px;
-    width: 100%;
-    height: 130px;
-    position: absolute;
-    transform: translate(-50%, -50%);
+  border-radius: 5px;
+  width: 100%;
+  height: 130px;
+  position: absolute;
+  transform: translate(-50%, -50%);
 }
 
 .home-name {
